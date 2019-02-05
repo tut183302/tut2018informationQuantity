@@ -72,7 +72,7 @@ public class Frequencer implements FrequencerInterface {
                 continue;}
             return order ^ (x < y) ? -1 : 1;
         }
-        return order ? 1 : -1; // This line should be modified.
+        return order ? -1 : 1; // This line should be modified.
     }
 
     public void setSpace(byte []space) {
@@ -121,14 +121,15 @@ public class Frequencer implements FrequencerInterface {
         //
         // ****  Please write code here... ***
         //
+	var n = suffixArray[i];
         while (j < end) {
-            if(mySpace.length <= i){
+            if(mySpace.length <= n){
                 return -1;
             }
-            var x = mySpace[suffixArray[i]];
+            var x = mySpace[n];
             var y = myTarget[j];
             if(x == y){
-                i++;
+                n++;
                 j++;
                 continue;
             }
