@@ -52,16 +52,16 @@ public class TestCase {
         {
             System.out.println("checking s4.B183301.InformationEstimator");
             InformationEstimatorTest("HiaHic","Hi");
-            InformationEstimatorTest("3210321001230123", "0",2d);
-            InformationEstimatorTest("3210321001230123", "1",2d);
-            InformationEstimatorTest("3210321001230123", "01",4d);
-            InformationEstimatorTest("3210321001230123", "2",2d);
-            InformationEstimatorTest("3210321001230123", "12",4d);
-            InformationEstimatorTest("3210321001230123", "012",6d);
-            InformationEstimatorTest("3210321001230123", "0123",8d);
+            InformationEstimatorTest("3210321001230123", "0");
+            InformationEstimatorTest("3210321001230123", "1");
+            InformationEstimatorTest("3210321001230123", "01");
+            InformationEstimatorTest("3210321001230123", "2");
+            InformationEstimatorTest("3210321001230123", "12");
+            InformationEstimatorTest("3210321001230123", "012");
+            InformationEstimatorTest("3210321001230123", "0123");
             InformationEstimatorTest("3210321001230123", "01234",Double.MAX_VALUE);
-            InformationEstimatorTest("3210321001230123", "00",2.4150374992788435);
-            InformationEstimatorTest("3210321001230123", "3210",8d);
+            InformationEstimatorTest("3210321001230123", "00");
+            InformationEstimatorTest("3210321001230123", "3210");
             InformationEstimatorTest("3210321001230123", "ff",Double.MAX_VALUE);
             InformationEstimatorTest("3210321001230123", "3210321001230123");
             InformationEstimatorTest("3210321001230123", null, 0.0);

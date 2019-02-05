@@ -72,7 +72,7 @@ public class Frequencer implements FrequencerInterface {
                 continue;}
             return order ^ (x < y) ? -1 : 1;
         }
-        return order ? 1 : -1; // This line should be modified.
+        return order ? 1 : -1;
     }
 
     public void setSpace(byte []space) {
@@ -124,7 +124,7 @@ public class Frequencer implements FrequencerInterface {
         var n = suffixArray[i];
         while (j < end) {
             if(mySpace.length <= n){
-                return -1;
+                return 1;
             }
             var x = mySpace[n];
             var y = myTarget[j];
@@ -135,7 +135,7 @@ public class Frequencer implements FrequencerInterface {
             }
             return x > y ? 1 : -1;
         }
-        return 0; // This line should be modified.
+        return 0;
     }
 
     private int subByteStartIndex(int start, int end) {
@@ -146,19 +146,27 @@ public class Frequencer implements FrequencerInterface {
         //
         // ****  Please write code here... ***
         //
+        /*
+        for (int i = 0; i < mySpace.length;i++){
+            if(targetCompare(i,start,end) == 0){
+                return i;
+            }
+        }
+        return -1;
 
-
+        /**/
         int min = -1;
         int max = mySpace.length;
 
         while(max - min > 1) {
-            int mid = (max + min) / 2;
+            int mid = (max - min) / 2 + min;
             int compare = targetCompare(mid,start,end);
             if(compare >= 0) max = mid;
             else min = mid;
         }
 
         return max; // This line should be modified.
+        /**/
     }
 
     private int subByteEndIndex(int start, int end) {
@@ -169,17 +177,25 @@ public class Frequencer implements FrequencerInterface {
         //
         // ****  Please write code here... ***
         //
-
+        /*
+        for (int i = mySpace.length-1; i >= 0;i--){
+            if(targetCompare(i,start,end) == 0){
+                return i;
+            }
+        }
+        return -1;
+        /**/
         int min = -1;
         int max = mySpace.length;
 
         while(max - min > 1) {
-            int mid = (max + min) / 2;
+            int mid = (max - min) / 2 + min;
             int compare = targetCompare(mid,start,end);
             if(compare <= 0) min = mid;
             else max = mid;
         }
-        return max; // This line should be modified.
+        return min; // This line should be modified.
+        /**/
     }
 
     public int subByteFrequency(int start, int end) {
@@ -196,7 +212,7 @@ public class Frequencer implements FrequencerInterface {
 	*/
         int first = subByteStartIndex(start, end);
         int last1 = subByteEndIndex(start, end);
-        return last1 - first;
+        return first == -1 ? 0 : last1 - first + 1;
     }
 
     public void setTarget(byte [] target) {
@@ -231,12 +247,15 @@ public class Frequencer implements FrequencerInterface {
 
             FrequenceChecker(frequencerObject,"H",4);
             FrequenceChecker(frequencerObject,"Hi",2);
+            FrequenceChecker(frequencerObject,"o",2);
             FrequenceChecker(frequencerObject,"Hi ",2);
             FrequenceChecker(frequencerObject,"Hi Ho Hi Ho",1);
+            FrequenceChecker(frequencerObject,"Hio",0);
 
         }
         catch(Exception e) {
-            System.out.println("STOP");
+            //System.out.println("STOP");
+            e.printStackTrace();
         }
     }
 
