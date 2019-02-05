@@ -1,4 +1,4 @@
-package s4.B183301; // Please modify to s4.Bnnnnnn, where nnnnnn is your student ID. 
+package s4.B183301; // Please modify to s4.Bnnnnnn, where nnnnnn is your student ID.
 
 import java.lang.*;
 import java.util.ArrayList;
@@ -54,11 +54,19 @@ public class TestCase {
         }
         {
             System.out.println("checking s4.B183301.InformationEstimator");
+            InformationEstimatorTest("HiaHic","Hi");
             InformationEstimatorTest("3210321001230123", "0");
+            InformationEstimatorTest("3210321001230123", "1");
             InformationEstimatorTest("3210321001230123", "01");
+            InformationEstimatorTest("3210321001230123", "2");
+            InformationEstimatorTest("3210321001230123", "12");
+            InformationEstimatorTest("3210321001230123", "012");
             InformationEstimatorTest("3210321001230123", "0123");
+            InformationEstimatorTest("3210321001230123", "01234",Double.MAX_VALUE);
             InformationEstimatorTest("3210321001230123", "00");
             InformationEstimatorTest("3210321001230123", "3210");
+            InformationEstimatorTest("3210321001230123", "ff",Double.MAX_VALUE);
+            InformationEstimatorTest("3210321001230123", "3210321001230123");
             InformationEstimatorTest("3210321001230123", null, 0.0);
             InformationEstimatorTest("3210321001230123", "", 0.0);
             InformationEstimatorTest(null, "01", Double.MAX_VALUE);
@@ -66,9 +74,6 @@ public class TestCase {
             InformationEstimatorTest("g","f",Double.MAX_VALUE);
         }
     }
-
-
-
     /**
      * Testing Estimator without expected value
      *
