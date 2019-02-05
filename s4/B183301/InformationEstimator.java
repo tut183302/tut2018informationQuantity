@@ -1,10 +1,15 @@
 package s4.B183301; // Please modify to s4.Bnnnnnn, where nnnnnn is your student ID. 
+
 import java.lang.*;
+
 import s4.specification.*;
 
 import static s4.B183301.TestCase.InformationEstimatorTest;
 
 /* What is imported from s4.specification
+=======
+/** What is imported from s4.specification
+>>>>>>> upstream/master
 package s4.specification;
 public interface InformationEstimatorInterface{
     void setTarget(byte target[]); // set the data for computing the information quantities
@@ -17,10 +22,10 @@ public interface InformationEstimatorInterface{
 }                        
 */
 
-public class InformationEstimator implements InformationEstimatorInterface{
+public class InformationEstimator implements InformationEstimatorInterface {
     // Code to tet, *warning: This code condtains intentional problem*
-    byte [] myTarget; // data to compute its information quantity
-    byte [] mySpace;  // Sample space to compute the probability
+    byte[] myTarget; // data to compute its information quantity
+    byte[] mySpace;  // Sample space to compute the probability
     FrequencerInterface myFrequencer;  // Object for counting frequency
 
     byte [] subBytes(byte [] x, int start, int end) {
@@ -94,13 +99,11 @@ public class InformationEstimator implements InformationEstimatorInterface{
             InformationEstimatorInterface myObject;
             double value;
             System.out.println("checking s4.B183301.InformationEstimator");
-            myObject = new s4.B183301.InformationEstimator();
-            myObject.setSpace("3210321001230123".getBytes());
-            InformationEstimatorTest(myObject,"0");
-            InformationEstimatorTest(myObject,"01");
-            InformationEstimatorTest(myObject,"0123");
-            InformationEstimatorTest(myObject,"00");
-            InformationEstimatorTest(myObject,"0012");
+            InformationEstimatorTest("3210321001230123","0");
+            InformationEstimatorTest("3210321001230123","01");
+            InformationEstimatorTest("3210321001230123","0123");
+            InformationEstimatorTest("3210321001230123","00");
+            InformationEstimatorTest("3210321001230123","0012");
         }
         catch(Exception e) {
             System.out.println("Exception occurred: STOP");
