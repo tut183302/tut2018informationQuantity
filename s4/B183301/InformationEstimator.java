@@ -85,46 +85,37 @@ public class InformationEstimator implements InformationEstimatorInterface {
             return 0.0;
         if (mySpace == null || mySpace.length == 0)
             return Double.MAX_VALUE;
-        boolean[] partition = new boolean[myTarget.length + 1];
-        int np;
-        np = 1 << (myTarget.length - 1);
-        // System.out.println("np="+np+" length="+myTarget.length);
-        double value = Double.MAX_VALUE; // value = mininimum of each "value1".
-
-        for (int p = 0; p < np; p++) { // There are 2^(n-1) kinds of partitions.
-            // binary representation of p forms partition.
-            // for partition {"ab" "cde" "fg"}
-            // a b c d e f g   : myTarget
-            // T F T F F T F T : partition:
-            partition[0] = true; // I know that this is not needed, but..
-            for (int i = 0; i < myTarget.length - 1; i++) {
-                partition[i + 1] = (0 != ((1 << i) & p));
+        var cash = new double[myTarget.length];
+        myFrequencer.setTarget(myTarget);
+        for (int i = 0; i < myTarget.length; i++){
+            var min = Double.POSITIVE_INFINITY;
+            for (int j = 0; j < i; j++) {
+                int freq = myFrequencer.subByteFrequency(j + 1, i + 1);
+                var sb = iq (freq) + cash[j];
+                min = Math.min(min,sb);
             }
-            partition[myTarget.length] = true;
-
-            // Compute Information Quantity for the partition, in "value1"
-            // value1 = IQ(#"ab")+IQ(#"cde")+IQ(#"fg") for the above example
-            double value1 = 0.0;
-            int end = 0;
-            int start = end;
-            while (start < myTarget.length) {
-                // System.out.write(myTarget[end]);
-                end++;
-                while (!partition[end]) {
-                    // System.out.write(myTarget[end]);
-                    end++;
-                }
-                // System.out.print("("+start+","+end+")");
-                myFrequencer.setTarget(subBytes(myTarget, start, end));
-                value1 = value1 + iq(myFrequencer.frequency());
-                start = end;
-            }
-            // System.out.println(" "+ value1);
-
-            // Get the minimal value in "value"
-            if (value1 < value) value = value1;
+            int freq = myFrequencer.subByteFrequency(0, i + 1);
+            var iqn = iq(freq);
+            cash[i] = Math.min(min, iqn);
         }
+        var value = cash[myTarget.length-1];
         return Double.isInfinite(value) ? Double.MAX_VALUE : value;
+    }
+
+    public static void main(String[] args) {
+        try {
+            InformationEstimatorInterface myObject;
+            double value;
+            System.out.println("checking s4.B183301.InformationEstimator");
+            InformationEstimatorTest("3210321001230123","0");
+            InformationEstimatorTest("3210321001230123","01");
+            InformationEstimatorTest("3210321001230123","0123");
+            InformationEstimatorTest("3210321001230123","00");
+            InformationEstimatorTest("3210321001230123","0012");
+        }
+        catch(Exception e) {
+            System.out.println("Exception occurred: STOP");
+        }
     }
 }
 				  

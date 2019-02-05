@@ -37,6 +37,7 @@ public class Frequencer implements FrequencerInterface {
                     System.out.write(mySpace[j]);
                 }
                 System.out.write('\n');
+
             }
         }
     }
@@ -72,7 +73,7 @@ public class Frequencer implements FrequencerInterface {
                 continue;}
             return order ^ (x < y) ? -1 : 1;
         }
-        return order ? 1 : -1; // This line should be modified.
+        return order ? 1 : -1;
     }
 
     public void setSpace(byte []space) {
@@ -121,20 +122,21 @@ public class Frequencer implements FrequencerInterface {
         //
         // ****  Please write code here... ***
         //
+        var n = suffixArray[i];
         while (j < end) {
-            if(mySpace.length <= i){
-                return -1;
+            if(mySpace.length <= n){
+                return 1;
             }
-            var x = mySpace[suffixArray[i]];
+            var x = mySpace[n];
             var y = myTarget[j];
             if(x == y){
-                i++;
+                n++;
                 j++;
                 continue;
             }
             return x > y ? 1 : -1;
         }
-        return 0; // This line should be modified.
+        return 0;
     }
 
     private int subByteStartIndex(int start, int end) {
@@ -145,13 +147,11 @@ public class Frequencer implements FrequencerInterface {
         //
         // ****  Please write code here... ***
         //
-
-
         int min = -1;
         int max = mySpace.length;
 
         while(max - min > 1) {
-            int mid = (max + min) / 2;
+            int mid = (max - min) / 2 + min;
             int compare = targetCompare(mid,start,end);
             if(compare >= 0) max = mid;
             else min = mid;
@@ -168,17 +168,16 @@ public class Frequencer implements FrequencerInterface {
         //
         // ****  Please write code here... ***
         //
-
         int min = -1;
         int max = mySpace.length;
 
         while(max - min > 1) {
-            int mid = (max + min) / 2;
+            int mid = (max - min) / 2 + min;
             int compare = targetCompare(mid,start,end);
             if(compare <= 0) min = mid;
             else max = mid;
         }
-        return max; // This line should be modified.
+        return min; // This line should be modified.
     }
 
     public int subByteFrequency(int start, int end) {
@@ -195,7 +194,7 @@ public class Frequencer implements FrequencerInterface {
 	*/
         int first = subByteStartIndex(start, end);
         int last1 = subByteEndIndex(start, end);
-        return last1 - first;
+        return first == -1 ? 0 : last1 - first + 1;
     }
 
     public void setTarget(byte [] target) {
@@ -228,18 +227,30 @@ public class Frequencer implements FrequencerInterface {
 	       A:o Hi Ho
 	    */
 
-            frequencerObject.setTarget("H".getBytes());
-            //
-            // ****  Please write code to check subByteStartIndex, and subByteEndIndex
-            //
+            FrequenceChecker(frequencerObject,"H",4);
+            FrequenceChecker(frequencerObject,"Hi",2);
+            FrequenceChecker(frequencerObject,"o",2);
+            FrequenceChecker(frequencerObject,"Hi ",2);
+            FrequenceChecker(frequencerObject,"Hi Ho Hi Ho",1);
+            FrequenceChecker(frequencerObject,"Hio",0);
 
-            int result = frequencerObject.frequency();
-            System.out.print("Freq = "+ result+" ");
-            if(4 == result) { System.out.println("OK"); } else {System.out.println("WRONG"); }
         }
         catch(Exception e) {
-            System.out.println("STOP");
+            //System.out.println("STOP");
+            e.printStackTrace();
         }
+    }
+
+    private static void FrequenceChecker(Frequencer frequencerObject,String str,int expected) {
+        int result;
+        frequencerObject.setTarget(str.getBytes());
+        //
+        // ****  Please write code to check subByteStartIndex, and subByteEndIndex
+        //
+
+        result = frequencerObject.frequency();
+        System.out.print("Freq = "+ result+" ");
+        if(expected == result) { System.out.println("OK"); } else {System.out.println("WRONG"); }
     }
 }	    
 	    
