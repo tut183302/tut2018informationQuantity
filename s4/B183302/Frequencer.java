@@ -1,116 +1,247 @@
-package s4.B183302; // Please modify to s4.Bnnnnnn, where nnnnnn is your student ID. 
-import java.lang.*;
+package s4.B183302; // Please modify to s4.Bnnnnnn, where nnnnnn is your student ID.
 import s4.specification.*;
 
-/* What is imported from s4.specification
-package s4.specification;
-public interface InformationEstimatorInterface{
-    void setTarget(byte target[]); // set the data for computing the information quantities
-    void setSpace(byte space[]); // set data for sample space to computer probability
-    double estimation(); // It returns 0.0 when the target is not set or Target's length is zero;
-// It returns Double.MAX_VALUE, when the true value is infinite.
-// The behavior is undefined, if the true value is finete but larger than Double.MAX_VALUE.
-// Note that this happens only when the space is unreasonably large. We will encounter other problem anyway.
-// Otherwise, estimation of information quantity, 
-}                        
+/*
+interface FrequencerInterface {     // This interface provides the design for frequency counter.
+    void setTarget(byte[]  target); // set the data to search.
+    void setSpace(byte[]  space);  // set the data to be searched target from.
+    int frequency(); //It return -1, when TARGET is not set or TARGET's length is zero
+                    //Otherwise, it return 0, when SPACE is not set or Space's length is zero
+                    //Otherwise, get the frequency of TAGET in SPACE
+    int subByteFrequency(int start, int end);
+    // get the frequency of subByte of taget, i.e target[start], taget[start+1], ... , target[end-1].
+    // For the incorrect value of START or END, the behavior is undefined.
 */
 
-public class InformationEstimator implements InformationEstimatorInterface{
-    // Code to tet, *warning: This code condtains intentional problem*
+/**
+ * Simple Frequency Counter Class
+ */
+public class Frequencer implements FrequencerInterface {
+    // Code to start with: This code is not working, but good start point to work.
+    byte [] myTarget;
+    byte [] mySpace;
     boolean targetReady = false;
     boolean spaceReady = false;
-    byte [] myTarget; // data to compute its information quantity
-    byte [] mySpace;  // Sample space to compute the probability
-    FrequencerInterface myFrequencer;  // Object for counting frequency
 
-    byte [] subBytes(byte [] x, int start, int end) {
-	// corresponding to substring of String for  byte[] ,
-	// It is not implement in class library because internal structure of byte[] requires copy.
-	byte [] result = new byte[end - start];
-	for(int i = 0; i<end - start; i++) { result[i] = x[start + i]; };
-	return result;
+    int []  suffixArray;
+
+    // The variable, "suffixArray" is the sorted array of all suffixes of mySpace.
+    // Each suffix is expressed by a integer, which is the starting position in mySpace.
+    // The following is the code to print the variable
+    private void printSuffixArray() {
+        if(spaceReady) {
+            for(int i=0; i< mySpace.length; i++) {
+                int s = suffixArray[i];
+                for(int j=s;j<mySpace.length;j++) {
+                    System.out.write(mySpace[j]);
+                }
+                System.out.write('\n');
+            }
+        }
     }
 
-    // IQ: information quantity for a count,  -log2(count/sizeof(space))
-    double iq(int freq) {
-	return  - Math.log10((double) freq / (double) mySpace.length)/ Math.log10((double) 2.0);
+    private int suffixCompare(int i, int j) {
+        // comparing two suffixes by dictionary order.
+        // i and j denoetes suffix_i, and suffix_j
+        // if suffix_i > suffix_j, it returns 1
+        // if suffix_i < suffix_j, it returns -1
+        // if suffix_i = suffix_j, it returns 0;
+        // It is not implemented yet,
+        // It should be used to create suffix array.
+        // Example of dictionary order
+        // "i"      <  "o"        : compare by code
+        // "Hi"     <  "Ho"       ; if head is same, compare the next element
+        // "Ho"     <  "Ho "      ; if the prefix is identical, longer string is big
+        //
+        // ****  Please write code here... ***
+        //
+        if(i == j)return 0;
+        var order =  i < j;//比較しやすいようにiとjを並び替える
+        if(!order){
+            var temp = j ;
+            j = i;
+            i = temp;
+        }
+        while (j < mySpace.length){
+            var x = mySpace[i];
+            var y = mySpace[j];
+            if(x == y){
+                i++;
+                j++;
+                continue;}
+            return order ^ (x < y) ? -1 : 1;
+        }
+        return order ? -1 : 1; // This line should be modified.
     }
 
-    public void setTarget(byte [] target) { myTarget = target; if(target.length>0) targetReady = true;}
-    public void setSpace(byte []space) { 
-	myFrequencer = new Frequencer();
-	mySpace = space; myFrequencer.setSpace(space); 
-	spaceReady = true;
+    public void setSpace(byte []space) {
+        mySpace = space; if(mySpace.length>0) spaceReady = true;
+        suffixArray = new int[space.length];
+        // put all suffixes  in suffixArray. Each suffix is expressed by one integer.
+        for(int i = 0; i< space.length; i++) {
+            suffixArray[i] = i;
+        }
+        // Sorting is not implmented yet.
+        //
+        //
+        // ****  Please write code here... ***
+        //
+        for (int i = 1; i < space.length; i++) {
+            var temp = i;
+            if(suffixCompare(suffixArray[i-1],temp) < 0){
+                var j = i;
+                do{
+                    suffixArray[j] = suffixArray[j-1];
+                    j--;
+                }while (j > 0 && suffixCompare(suffixArray[j-1],temp) < 0);
+                suffixArray[j] = temp;
+            }
+        }
     }
 
-    public double estimation(){
-	boolean [] partition = new boolean[myTarget.length+1];
-	int np;
+    private int targetCompare(int i, int j, int end) {
+        // comparing suffix_i and target_j_end by dictonary order with limitation of length;
+        // if the beginning of suffix_i matches target_i_end, and suffix is longer than target  it returns 0;
+        // if suffix_i > target_i_end it return 1;
+        // if suffix_i < target_i_end it return -1
+        // It is not implemented yet.
+        // It should be used to search the apropriate index of some suffix.
+        // Example of search
+        // suffix          target
+        // "o"       >     "i"
+        // "o"       <     "z"
+        // "o"       =     "o"
+        // "o"       <     "oo"
+        // "Ho"      >     "Hi"
+        // "Ho"      <     "Hz"
+        // "Ho"      =     "Ho"
+        // "Ho"      <     "Ho "   : "Ho " is not in the head of suffix "Ho"
+        // "Ho"      =     "H"     : "H" is in the head of suffix "Ho"
+        //
+        // ****  Please write code here... ***
+        //
+	var n = suffixArray[i];
+        while (j < end) {
+            if(mySpace.length <= n){
+                return -1;
+            }
+            var x = mySpace[n];
+            var y = myTarget[j];
+            if(x == y){
+                n++;
+                j++;
+                continue;
+            }
+            return x > y ? 1 : -1;
+        }
+        return 0; // This line should be modified.
+    }
 
-	if(targetReady == false) return (double) 0.0;
-	if(spaceReady == false) return Double.MAX_VALUE;
+    private int subByteStartIndex(int start, int end) {
+        // It returns the index of the first suffix which is equal or greater than subBytes;
+        // not implemented yet;
+        // For "Ho", it will return 5  for "Hi Ho Hi Ho".
+        // For "Ho ", it will return 6 for "Hi Ho Hi Ho".
+        //
+        // ****  Please write code here... ***
+        //
 
-	np = 1<<(myTarget.length-1);
-	// System.out.println("np="+np+" length="+myTarget.length);
-	double value = Double.MAX_VALUE; // value = mininimum of each "value1".
 
-	for(int p=0; p<np; p++) { // There are 2^(n-1) kinds of partitions.
-	    // binary representation of p forms partition.
-	    // for partition {"ab" "cde" "fg"}
-	    // a b c d e f g   : myTarget
-	    // T F T F F T F T : partition:
-	    partition[0] = true; // I know that this is not needed, but..
-	    for(int i=0; i<myTarget.length -1;i++) {
-		partition[i+1] = (0 !=((1<<i) & p));
+        int min = -1;
+        int max = mySpace.length;
+
+        while(max - min > 1) {
+            int mid = (max + min) / 2;
+            int compare = targetCompare(mid,start,end);
+            if(compare >= 0) max = mid;
+            else min = mid;
+        }
+
+        return max; // This line should be modified.
+    }
+
+    private int subByteEndIndex(int start, int end) {
+        // It returns the next index of the first suffix which is greater than subBytes;
+        // not implemented yet
+        // For "Ho", it will return 7  for "Hi Ho Hi Ho".
+        // For "Ho ", it will return 7 for "Hi Ho Hi Ho".
+        //
+        // ****  Please write code here... ***
+        //
+
+        int min = -1;
+        int max = mySpace.length;
+
+        while(max - min > 1) {
+            int mid = (max + min) / 2;
+            int compare = targetCompare(mid,start,end);
+            if(compare <= 0) min = mid;
+            else max = mid;
+        }
+        return max; // This line should be modified.
+    }
+
+    public int subByteFrequency(int start, int end) {
+	/* This method be work as follows, but
+	int spaceLength = mySpace.length;
+	int count = 0;
+	for(int offset = 0; offset< spaceLength - (end - start); offset++) {
+	    boolean abort = false;
+	    for(int i = 0; i< (end - start); i++) {
+		if(myTarget[start+i] != mySpace[offset+i]) { abort = true; break; }
 	    }
-	    partition[myTarget.length] = true;
-
-	    // Compute Information Quantity for the partition, in "value1"
-	    // value1 = IQ(#"ab")+IQ(#"cde")+IQ(#"fg") for the above example
-            double value1 = (double) 0.0;
-	    int end = 0;;
-	    int start = end;
-	    while(start<myTarget.length) {
-		// System.out.write(myTarget[end]);
-		end++;;
-		while(partition[end] == false) { 
-		    // System.out.write(myTarget[end]);
-		    end++;
-		}
-		// System.out.print("("+start+","+end+")");
-		myFrequencer.setTarget(subBytes(myTarget, start, end));
-		int freq = myFrequencer.frequency();
-		if(freq == 0) break;
-		if(freq < 0) return (double) 0.0;
-		value1 = value1 + iq(freq);
-		start = end;
-	    }
-	    // System.out.println(" "+ value1);
-
-	    // Get the minimal value in "value"
-	    if(value1 < value) value = value1;
+	    if(abort == false) { count++; }
 	}
-	return value;
+	*/
+        int first = subByteStartIndex(start, end);
+        int last1 = subByteEndIndex(start, end);
+        return last1 - first;
+    }
+
+    public void setTarget(byte [] target) {
+        myTarget = target; if(myTarget.length>0) targetReady = true;
+    }
+
+    public int frequency() {
+        if(targetReady == false) return -1;
+        if(spaceReady == false) return 0;
+        return subByteFrequency(0, myTarget.length);
     }
 
     public static void main(String[] args) {
-	InformationEstimator myObject;
-	double value;
-	myObject = new InformationEstimator();
-	myObject.setSpace("3210321001230123".getBytes());
-	myObject.setTarget("0".getBytes());
-	value = myObject.estimation();
-	System.out.println(">0 "+value);
-	myObject.setTarget("01".getBytes());
-	value = myObject.estimation();
-	System.out.println(">01 "+value);
-	myObject.setTarget("0123".getBytes());
-	value = myObject.estimation();
-	System.out.println(">0123 "+value);
-	myObject.setTarget("00".getBytes());
-	value = myObject.estimation();
-	System.out.println(">00 "+value);
+        Frequencer frequencerObject;
+        try {
+            frequencerObject = new Frequencer();
+            frequencerObject.setSpace("Hi Ho Hi Ho".getBytes());
+            frequencerObject.printSuffixArray(); // you may use this line for DEBUG
+	    /* Example from "Hi Ho Hi Ho"
+	       0: Hi Ho
+	       1: Ho
+	       2: Ho Hi Ho
+	       3:Hi Ho
+	       4:Hi Ho Hi Ho
+	       5:Ho
+	       6:Ho Hi Ho
+	       7:i Ho
+	       8:i Ho Hi Ho
+	       9:o
+	       A:o Hi Ho
+	    */
+
+            frequencerObject.setTarget("H".getBytes());
+            //
+            // ****  Please write code to check subByteStartIndex, and subByteEndIndex
+            //
+            int start,end;
+	    start = frequencerObject.subByteStartIndex(0,frequencerObject.myTarget.length);
+	    end = frequencerObject.subByteEndIndex(0,frequencerObject.myTarget.length);
+	    System.out.println("start:"+start+" end:"+end);
+            int result = frequencerObject.frequency();
+            System.out.print("Freq = "+ result+" ");
+            if(4 == result) { System.out.println("OK"); } else {System.out.println("WRONG"); }
+        }
+        catch(Exception e) {
+            System.out.println("STOP");
+        }
     }
-}
-				  
-			       
+}	    
