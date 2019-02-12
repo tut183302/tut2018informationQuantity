@@ -55,12 +55,7 @@ public class InformationEstimator implements InformationEstimatorInterface{
             }
             cash[i] = Math.min(min, iq(myFrequencer.subByteFrequency(0, i+1)));
         }
-	if (cash[myTarget.length-1] == Double.MAX_VALUE){
-	    return Double.MAX_VALUE;
-	}
-	else {
 	    return cash[myTarget.length-1];
-	}
     }
 
     public static void main(String[] args) {
@@ -82,4 +77,3 @@ public class InformationEstimator implements InformationEstimatorInterface{
 	System.out.println(">00 "+value);
     }
 }
-		
