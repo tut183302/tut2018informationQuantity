@@ -99,16 +99,16 @@ public class InformationEstimator implements InformationEstimatorInterface{
         double cash[] = new double[myTarget.length];
         myFrequencer.setTarget(myTarget);
         for (int i = 0; i < myTarget.length; i++){
-            double min=Double.POSITIVE_INFINITY;
+            double min = Double.MAX_VALUE;
             for (int j = 0; j < i; j++) {
-                min = Math.min(min,iq(myFrequencer.subByteFrequency(j + 1, i + 1)) + cash[j]);
+                min = Math.min(min,iq(myFrequencer.subByteFrequency(j+1, i+1)) + cash[j]);
             }
-            cash[i] = Math.min(min, iq(myFrequencer.subByteFrequency(0, i + 1)));
+            cash[i] = Math.min(min, iq(myFrequencer.subByteFrequency(0, i+1)));
         }
-	if(Double.isInfinite(cash[myTarget.length-1]) == true){
+	if (cash[myTarget.length-1] == Double.MAX_VALUE){
 	    return Double.MAX_VALUE;
 	}
-	else{
+	else {
 	    return cash[myTarget.length-1];
 	}
     }
