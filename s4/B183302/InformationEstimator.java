@@ -55,7 +55,7 @@ public class InformationEstimator implements InformationEstimatorInterface{
             }
             cash[i] = Math.min(min, iq(myFrequencer.subByteFrequency(0, i+1)));
         }
-	    return cash[myTarget.length-1];
+	return cash[myTarget.length-1];
     }
 
     public static void main(String[] args) {
